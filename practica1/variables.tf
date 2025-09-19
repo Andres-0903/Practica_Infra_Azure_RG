@@ -49,6 +49,11 @@ variable "public_key_path" {
   description = "Ruta de la clave pública SSH"
   type        = string
 }
+##tags
+variable "tags" {
+  description = "Tags globales"
+  type        = map(string)
+}
 
 
 
