@@ -22,12 +22,13 @@ pipeline {
                 echo '📂 Mostrando archivos descargados...'
                 sh 'pwd'
                 sh 'ls -la'
+                sh 'ls -la practica1'
             }
         }
 
         stage('Terraform Init') {
             steps {
-                dir("${env.WORKSPACE}") {   // 👈 ejecuta dentro del workspace del repo
+                dir('practica1') {
                     echo '🚀 Inicializando Terraform...'
                     sh 'terraform init'
                 }
@@ -36,7 +37,7 @@ pipeline {
 
         stage('Terraform Validate') {
             steps {
-                dir("${env.WORKSPACE}") {
+                dir('practica1') {
                     echo '🧩 Validando configuración...'
                     sh 'terraform validate'
                 }
@@ -45,7 +46,7 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                dir("${env.WORKSPACE}") {
+                dir('practica1') {
                     echo '🧠 Generando plan de ejecución...'
                     sh 'terraform plan -out=tfplan'
                 }
@@ -55,7 +56,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 input message: '¿Deseas aplicar los cambios en Azure?'
-                dir("${env.WORKSPACE}") {
+                dir('practica1') {
                     echo '💥 Aplicando cambios...'
                     sh 'terraform apply -auto-approve tfplan'
                 }
