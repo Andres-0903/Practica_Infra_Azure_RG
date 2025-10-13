@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // Variables de autenticación para Azure
         ARM_CLIENT_ID       = credentials('ARM_CLIENT_ID')
         ARM_CLIENT_SECRET   = credentials('ARM_CLIENT_SECRET')
         ARM_SUBSCRIPTION_ID = credentials('ARM_SUBSCRIPTION_ID')
@@ -12,45 +11,53 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo "📦 Clonando el repositorio..."
+                cleanWs()
+                echo '📦 Clonando el repositorio...'
                 git branch: 'pruebas', url: 'https://github.com/Andres-0903/Practica_Infra_Azure_RG.git'
+            }
+        }
+
+        stage('Verificar archivos') {
+            steps {
+                echo '📂 Mostrando archivos descargados...'
+                sh 'pwd'
+                sh 'ls -la'
             }
         }
 
         stage('Terraform Init') {
             steps {
-                echo "🚀 Inicializando Terraform..."
-                sh 'terraform init'
+                dir("${env.WORKSPACE}") {   // 👈 ejecuta dentro del workspace del repo
+                    echo '🚀 Inicializando Terraform...'
+                    sh 'terraform init'
+                }
             }
         }
 
         stage('Terraform Validate') {
             steps {
-                echo "🧩 Validando configuración..."
-                sh 'terraform validate'
+                dir("${env.WORKSPACE}") {
+                    echo '🧩 Validando configuración...'
+                    sh 'terraform validate'
+                }
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                echo "🧠 Generando plan de ejecución..."
-                sh 'terraform plan -out=tfplan'
+                dir("${env.WORKSPACE}") {
+                    echo '🧠 Generando plan de ejecución...'
+                    sh 'terraform plan -out=tfplan'
+                }
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                script {
-                    def userInput = input(
-                        message: "¿Deseas aplicar los cambios en Azure?",
-                        parameters: [booleanParam(defaultValue: false, name: 'applyChanges')]
-                    )
-                    if (userInput) {
-                        echo "✅ Aplicando los cambios..."
-                        sh 'terraform apply -auto-approve tfplan'
-                    } else {
-                        echo "❌ Despliegue cancelado por el usuario."
-                    }
+                input message: '¿Deseas aplicar los cambios en Azure?'
+                dir("${env.WORKSPACE}") {
+                    echo '💥 Aplicando cambios...'
+                    sh 'terraform apply -auto-approve tfplan'
                 }
             }
         }
@@ -58,10 +65,10 @@ pipeline {
 
     post {
         success {
-            echo "🎉 Despliegue completado exitosamente."
+            echo '✅ Despliegue completado correctamente.'
         }
         failure {
-            echo "⚠️ Error durante el despliegue."
+            echo '⚠️ Error durante el despliegue.'
         }
     }
 }
