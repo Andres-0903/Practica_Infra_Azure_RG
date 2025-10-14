@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        booleanParam(
+            name: 'DESTRUIR',
+            defaultValue: false,
+            description: 'Marcar esta opción si deseas destruir la infraestructura existente en Azure'
+        )
+    }
+
     environment {
         ARM_CLIENT_ID       = credentials('ARM_CLIENT_ID')
         ARM_CLIENT_SECRET   = credentials('ARM_CLIENT_SECRET')
@@ -54,11 +62,25 @@ pipeline {
         }
 
         stage('Terraform Apply') {
+            when {
+                expression { return params.DESTRUIR == false }
+            }
             steps {
-                input message: '¿Deseas aplicar los cambios en Azure?'
                 dir('practica1') {
-                    echo '💥 Aplicando cambios...'
-                    sh 'terraform apply -auto-approve tfplan'
+                    input message: '🟢 ¿Deseas aplicar los cambios en Azure? (Esto desplegará recursos reales)'
+                    sh 'terraform apply tfplan'
+                }
+            }
+        }
+
+        stage('Terraform Destroy') {
+            when {
+                expression { return params.DESTRUIR == true }
+            }
+            steps {
+                dir('practica1') {
+                    input message: '⚠️ ¿Confirmas eliminar los recursos creados en Azure?'
+                    sh 'terraform destroy -auto-approve'
                 }
             }
         }
@@ -66,10 +88,13 @@ pipeline {
 
     post {
         success {
-            echo '✅ Despliegue completado correctamente.'
+            echo '✅ Proceso completado exitosamente.'
         }
         failure {
-            echo '⚠️ Error durante el despliegue.'
+            echo '❌ Error durante la ejecución del pipeline.'
+        }
+        aborted {
+            echo '⚠️ Pipeline cancelado por el usuario.'
         }
     }
 }
