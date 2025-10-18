@@ -1,7 +1,5 @@
 variable "Azure_Tenant_Id" {}
 variable "Azure_Subscription_Id" {}
-variable "Azure_Client_Id" {}
-variable "Azure_Client_Secret" {}
 
 #Variables Network
 variable "address_segment" {
