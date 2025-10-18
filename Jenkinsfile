@@ -94,10 +94,10 @@ pipeline {
     }
     
     post {
-        always {
-            echo '🧹 Limpiando workspace...'
-            cleanWs()
-        }
+        // always {
+        //     echo '🧹 Limpiando workspace...'
+        //     cleanWs()
+        // }
         success {
             echo '✅ Pipeline ejecutado con éxito.'
         }
