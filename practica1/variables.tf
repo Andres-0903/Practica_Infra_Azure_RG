@@ -1,22 +1,7 @@
-variable "Azure_Tenant_Id" {
-  type        = string
-  description = "Tenat-ID"
-}
-
-variable "Azure_Client_Secret" {
-  type        = string
-  description = "Client-Secret"
-}
-
-variable "Azure_Client_Id" {
-  type        = string
-  description = "Client-ID"
-}
-
-variable "Azure_Subscription_Id" {
-  type        = string
-  description = "Subscription"
-}
+variable "Azure_Tenant_Id" {}
+variable "Azure_Subscription_Id" {}
+variable "Azure_Client_Id" {}
+variable "Azure_Client_Secret" {}
 
 #Variables Network
 variable "address_segment" {
