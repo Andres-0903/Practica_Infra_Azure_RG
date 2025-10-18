@@ -38,6 +38,21 @@ pipeline {
             }
         }
         
+        stage('Ver variables') {
+            steps {
+                sh '''
+                echo "TENANT: $ARM_TENANT_ID"
+                echo "SUBSCRIPTION: $ARM_SUBSCRIPTION_ID"
+                echo "CLIENT ID: $ARM_CLIENT_ID"
+                if [ -z "$ARM_CLIENT_SECRET" ]; then
+                echo "❌ El ARM_CLIENT_SECRET está vacío"
+                else
+                echo "✅ El ARM_CLIENT_SECRET tiene contenido(oculto por seguridad)"
+                fi
+                '''
+            }
+        }
+        
         stage('Inicializar Terraform') {
             steps {
                 echo '🚀 Inicializando Terraform...'
