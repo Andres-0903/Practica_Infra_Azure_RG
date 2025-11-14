@@ -32,8 +32,8 @@ pipeline {
         stage('Ver credenciales') {
             steps {
                 sh '''
-                echo "ARM_CLIENT_ID: $ARM_CLIENT_ID"
-                echo "ARM_CLIENT_SECRET(oculto por seguridad): ${#ARM_CLIENT_SECRET}"
+                echo "ARM_CLIENT_ID_Dev: $ARM_CLIENT_ID_Dev"
+                echo "ARM_CLIENT_SECRET_Dev(oculto por seguridad): ${#ARM_CLIENT_SECRET_Dev}"
                 '''
             }
         }
@@ -41,13 +41,13 @@ pipeline {
         stage('Ver variables') {
             steps {
                 sh '''
-                echo "TENANT: $ARM_TENANT_ID"
-                echo "SUBSCRIPTION: $ARM_SUBSCRIPTION_ID"
-                echo "CLIENT ID: $ARM_CLIENT_ID"
-                if [ -z "$ARM_CLIENT_SECRET" ]; then
-                echo "❌ El ARM_CLIENT_SECRET está vacío"
+                echo "TENANT: $ARM_TENANT_ID_Dev"
+                echo "SUBSCRIPTION: $ARM_SUBSCRIPTION_ID_Dev"
+                echo "CLIENT ID: $ARM_CLIENT_ID_Dev"
+                if [ -z "$ARM_CLIENT_SECRET_Dev" ]; then
+                echo "❌ El ARM_CLIENT_SECRET_Dev está vacío"
                 else
-                echo "✅ El ARM_CLIENT_SECRET tiene contenido(oculto por seguridad)"
+                echo "✅ El ARM_CLIENT_SECRET_Dev tiene contenido(oculto por seguridad)"
                 fi
                 '''
             }
@@ -56,10 +56,10 @@ pipeline {
         stage('Inicializar Terraform') {
             steps {
                 echo '🚀 Inicializando Terraform...'
-                dir('practica1') {
+                dir('Infra_Azure') {
                     sh '''
                     terraform init \
-                    -backend-config="access_key=$ARM_CLIENT_SECRET"
+                    -backend-config="access_key=$ARM_CLIENT_SECRET_Dev"
                     '''
                 }
             }
@@ -67,7 +67,7 @@ pipeline {
         
         stage('Ejecutar acción de Terraform') {
             steps {
-                dir('practica1') {
+                dir('Infra_Azure') {
                     script {
                         if (params.DESTRUIR) {
                             echo '🔥 Destruyendo infraestructura en Azure...'
