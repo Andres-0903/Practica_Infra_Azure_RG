@@ -53,6 +53,8 @@ pipeline {
                     -backend-config="storage_account_name=tfstatedvstorageacct" \
                     -backend-config="container_name=tfstate" \
                     -backend-config="key=infra.tfstate"
+                    -migrate-state \
+                    -input=false
                     '''
                 }
             }
