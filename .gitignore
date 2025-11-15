@@ -5,10 +5,11 @@
 *.tfstate
 *.tfstate.*
 *.tfvars
+*.infra.auto.tfvars*
 # Crash log files
 crash.log
 crash.*.log
-infra.auto.tfvars
+
 
 # password, private keys, and other secrets. These should not be part of version 
 # control as they are data points which are potentially sensitive and subject 
