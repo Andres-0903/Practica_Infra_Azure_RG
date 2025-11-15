@@ -1,3 +1,6 @@
+#Variables Azure
+variable "Azure_Client_Id" {}
+variable "Azure_Client_Secret" {}
 variable "Azure_Tenant_Id" {}
 variable "Azure_Subscription_Id" {}
 
