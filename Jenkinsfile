@@ -48,7 +48,11 @@ pipeline {
                 echo '🚀 Inicializando Terraform...'
                 dir('Infra_Azure') {
                     sh '''
-                    terraform init
+                    terraform init \
+                    -backend-config="resource_group_name=Practica_Terraform" \
+                    -backend-config="storage_account_name=tfstatedvstorageacct" \
+                    -backend-config="container_name=tfstate" \
+                    -backend-config="key=infra.tfstate"
                     '''
                 }
             }
